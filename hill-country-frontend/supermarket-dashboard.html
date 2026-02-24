@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Supermarket Dashboard</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:#f4f6f9;
+      color:#2c3e50;
+      display:block;
+    }
+
+    .dashboard-shell{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      width:100%;
+    }
+
+    .dashboard-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:18px 28px;
+      background:#ffffff;
+      border-bottom:1px solid #e5e8ee;
+      box-shadow:0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .brand-mark{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:bold;
+      font-size:18px;
+    }
+
+    .brand-dot{
+      height:14px;
+      width:14px;
+      border-radius:4px;
+      background:#2d7a52;
+      display:inline-block;
+    }
+
+    .tagline{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.2em;
+      color:#2d7a52;
+      font-weight:bold;
+    }
+
+    .header-actions{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .notification-bell{
+      position:relative;
+      width:38px;
+      height:38px;
+      border-radius:50%;
+      border:1px solid #2e7d32;
+      background:#ffffff;
+      color:#2e7d32;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px;
+      cursor:pointer;
+    }
+
+    .notification-badge{
+      position:absolute;
+      top:-6px;
+      right:-6px;
+      min-width:20px;
+      height:20px;
+      border-radius:10px;
+      background:#d32f2f;
+      color:#ffffff;
+      font-size:11px;
+      font-weight:700;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:0 5px;
+      border:2px solid #ffffff;
+    }
+
+    #notificationToastContainer{
+      position:fixed;
+      top:18px;
+      right:18px;
+      z-index:1400;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-width:360px;
+      width:calc(100vw - 36px);
+      pointer-events:none;
+    }
+
+    .notification-toast{
+      background:#e8f5e9;
+      border-left:4px solid #2e7d32;
+      border-radius:10px;
+      color:#1b5e20;
+      box-shadow:0 8px 18px rgba(46,125,50,0.22);
+      padding:12px 14px;
+      font-size:14px;
+      font-weight:600;
+      pointer-events:auto;
+      cursor:pointer;
+      animation:toast-in 220ms ease-out;
+    }
+
+    @keyframes toast-in{
+      from{
+        opacity:0;
+        transform:translateY(-8px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    .dashboard-layout{
+      display:flex;
+      flex:1;
+      width:100%;
+      align-items:stretch;
+    }
+
+    .sidebar{
+      background:#ffffff;
+      color:#2c3e50;
+      border-right:1px solid #e5e8ee;
+      box-shadow:0 1px 4px rgba(0,0,0,0.06);
+      position:relative;
+      height:auto;
+      flex:0 0 220px;
+    }
+
+    .sidebar h2{
+      color:#2c3e50;
+    }
+
+    .sidebar button,
+    .menu-btn{
+      color:#2c3e50;
+      border:1px solid transparent;
+      border-radius:6px;
+    }
+
+    .sidebar button:hover,
+    .menu-btn:hover{
+      background:#f4f6f9;
+      border-color:#e1e6ee;
+    }
+
+    .menu-btn.active{
+      background:#2d7a52;
+      color:#ffffff;
+      border-color:#2d7a52;
+      font-weight:bold;
+    }
+
+    .main-content{
+      margin-left:0;
+      padding:26px 28px;
+      width:100%;
+    }
+
+    .page-title{
+      margin:4px 0 18px;
+    }
+
+    .panel-card{
+      background:#ffffff;
+      border:1px solid #e6e9ef;
+      border-radius:12px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.12);
+      padding:22px;
+    }
+
+    .panel-card h2{
+      margin-top:0;
+    }
+
+    .orders-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap:14px;
+      margin-top:12px;
+    }
+
+    .order-card{
+      background:#ffffff;
+      border:1px solid #e6e9ef;
+      border-radius:12px;
+      padding:16px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .order-card h3{
+      margin:0 0 6px;
+      font-size:16px;
+      color:#2c3e50;
+    }
+
+    .order-meta{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      color:#5b6b7c;
+      font-size:14px;
+    }
+
+    .order-status{
+      display:inline-flex;
+      align-items:center;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:bold;
+      text-transform:uppercase;
+      letter-spacing:0.06em;
+      background:#f4f6f9;
+      color:#2c3e50;
+      margin-top:8px;
+      width:fit-content;
+    }
+
+    .order-status.pending{
+      background:#fff6e5;
+      color:#8a5b00;
+    }
+
+    .order-status.accepted{
+      background:#e9f6ef;
+      color:#2d7a52;
+    }
+
+    .order-status.rejected{
+      background:#fdecea;
+      color:#c0392b;
+    }
+
+    .delivery-section{
+      margin-top:12px;
+    }
+
+    .delivery-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap:14px;
+      margin-top:10px;
+    }
+
+    .delivery-card{
+      background:#ffffff;
+      border:1px solid #d9e3ea;
+      border-radius:12px;
+      padding:16px;
+      box-shadow:0 6px 16px rgba(10,36,24,0.08);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .delivery-route{
+      display:grid;
+      gap:8px;
+    }
+
+    .route-row{
+      display:flex;
+      align-items:flex-start;
+      gap:8px;
+      color:#475868;
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .route-row i{
+      color:#2e7d32;
+      margin-top:2px;
+    }
+
+    .driver-box{
+      background:#f8fbf9;
+      border:1px solid #dbeadf;
+      border-radius:10px;
+      padding:10px 12px;
+      color:#33475b;
+      font-size:13px;
+      display:grid;
+      gap:4px;
+    }
+
+    .delivery-tracker{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:6px;
+      align-items:center;
+    }
+
+    .tracker-step{
+      text-align:center;
+      font-size:12px;
+      color:#6f7f8d;
+      font-weight:600;
+      padding:8px 6px;
+      border-radius:999px;
+      background:#eef3f7;
+      border:1px solid #dbe4ea;
+    }
+
+    .tracker-step.active{
+      background:#e8f5e9;
+      border-color:#2e7d32;
+      color:#2e7d32;
+    }
+
+    .delivery-status{
+      display:inline-flex;
+      align-items:center;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:bold;
+      text-transform:uppercase;
+      letter-spacing:0.06em;
+      background:#f4f6f9;
+      color:#2c3e50;
+      margin-top:8px;
+      width:fit-content;
+    }
+
+    .delivery-status.active{
+      background:#e8f5e9;
+      color:#2e7d32;
+    }
+
+    .delivery-status.completed{
+      background:#eaf2ff;
+      color:#2a5ea7;
+    }
+
+    .delivery-actions{
+      display:flex;
+      gap:10px;
+      margin-top:2px;
+    }
+
+    .delivery-btn{
+      flex:1;
+      border:1px solid #d2dde6;
+      border-radius:8px;
+      padding:9px 10px;
+      font-size:13px;
+      font-weight:700;
+      cursor:pointer;
+      background:#ffffff;
+      color:#3a4b5d;
+    }
+
+    .delivery-btn.primary{
+      border-color:#2e7d32;
+      background:#2e7d32;
+      color:#ffffff;
+    }
+
+    .delivery-btn:hover{
+      background:#f2f6f9;
+    }
+
+    .delivery-btn.primary:hover{
+      background:#256628;
+    }
+
+    #content .card{
+      background:#ffffff;
+      border:1px solid #e6e9ef;
+      border-radius:12px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+      padding:16px;
+    }
+
+    #marketplaceList{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap:16px;
+      margin-top:12px;
+    }
+
+    .market-filter-bar{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      gap:12px;
+      margin:8px 0 14px;
+      padding:12px;
+      border:1px solid #cfe8d2;
+      border-radius:10px;
+      background:#f8fcf8;
+    }
+
+    .filter-group{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .filter-group label{
+      font-size:13px;
+      font-weight:700;
+      color:#2e7d32;
+    }
+
+    .filter-group select{
+      border:1px solid #2e7d32;
+      border-radius:8px;
+      padding:10px;
+      color:#2c3e50;
+      background:#ffffff;
+      outline:none;
+    }
+
+    .filter-group select:focus{
+      box-shadow:0 0 0 3px rgba(46,125,50,0.14);
+    }
+
+    .marketplace-card h3{
+      margin:6px 0 4px;
+      font-size:16px;
+      color:#2c3e50;
+    }
+
+    .marketplace-meta{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      color:#5b6b7c;
+      font-size:14px;
+      margin-bottom:10px;
+    }
+
+    .marketplace-card .order-btn{
+      background:#2e7d32;
+      color:#ffffff;
+      border:1px solid #2e7d32;
+      padding:10px 12px;
+      border-radius:6px;
+      cursor:pointer;
+      font-weight:bold;
+      flex:1;
+    }
+
+    .marketplace-card .order-btn:hover{
+      background:#255f28;
+    }
+
+    .marketplace-actions{
+      display:flex;
+      align-items:stretch;
+      gap:8px;
+    }
+
+    .info-wrap{
+      position:relative;
+      flex:0 0 auto;
+    }
+
+    .info-btn{
+      width:40px;
+      min-width:40px;
+      height:40px;
+      border-radius:8px;
+      border:1px solid #2e7d32;
+      background:#ffffff;
+      color:#2e7d32;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:16px;
+    }
+
+    .info-btn:hover{
+      background:#edf7ee;
+    }
+
+    .info-tooltip{
+      position:absolute;
+      left:0;
+      bottom:calc(100% + 8px);
+      min-width:220px;
+      max-width:260px;
+      background:#ffffff;
+      border:1px solid #cfe8d2;
+      box-shadow:0 8px 16px rgba(0,0,0,0.12);
+      border-radius:8px;
+      padding:8px 10px;
+      font-size:12px;
+      color:#3f5566;
+      line-height:1.4;
+      display:none;
+      z-index:10;
+      pointer-events:none;
+    }
+
+    .info-wrap:hover .info-tooltip{
+      display:block;
+    }
+
+    .product-info-modal{
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.45);
+      z-index:1650;
+      padding:18px;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .product-info-modal.open{
+      display:flex;
+    }
+
+    .product-info-card{
+      width:min(96vw, 440px);
+      background:#ffffff;
+      border-radius:12px;
+      border:1px solid #cfe8d2;
+      box-shadow:0 12px 26px rgba(0,0,0,0.2);
+      overflow:hidden;
+    }
+
+    .product-info-header{
+      background:#2e7d32;
+      color:#ffffff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:11px 14px;
+      font-weight:700;
+    }
+
+    .product-info-close-top{
+      background:transparent;
+      border:none;
+      color:#ffffff;
+      font-size:22px;
+      cursor:pointer;
+      line-height:1;
+    }
+
+    .product-info-body{
+      padding:14px;
+      color:#3f5566;
+      line-height:1.5;
+      font-size:14px;
+      white-space:pre-wrap;
+    }
+
+    .product-info-actions{
+      padding:0 14px 14px;
+    }
+
+    .product-info-close-btn{
+      width:100%;
+      border:1px solid #2e7d32;
+      background:#2e7d32;
+      color:#ffffff;
+      border-radius:8px;
+      padding:10px 12px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .product-info-close-btn:hover{
+      background:#255f28;
+    }
+
+    .slider{
+      position:relative;
+      width:100%;
+      height:180px;
+      overflow:hidden;
+      margin:10px 0 6px;
+      border-radius:8px;
+      border:1px solid #e5e8ee;
+      background:#f8fafc;
+    }
+
+    .slides{
+      width:100%;
+      height:180px;
+    }
+
+    .slide{
+      width:100%;
+      height:180px;
+      object-fit:cover;
+      display:none;
+    }
+
+    .slide.active{
+      display:block;
+    }
+
+    .prevBtn,
+    .nextBtn{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      background:rgba(0,0,0,0.55);
+      color:white;
+      border:none;
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      cursor:pointer;
+      font-size:18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:5;
+    }
+
+    .prevBtn{ left:8px; }
+    .nextBtn{ right:8px; }
+
+    .modal{
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.5);
+      padding:24px;
+      z-index:1000;
+    }
+
+    .modal-content{
+      background:#ffffff;
+      width:min(96vw, 560px);
+      margin:auto;
+      border-radius:12px;
+      border:1px solid #e6e9ef;
+      box-shadow:0 10px 30px rgba(0,0,0,0.2);
+      padding:20px 22px;
+      max-height:calc(100vh - 48px);
+      overflow:auto;
+    }
+
+    .modal-content h2{
+      margin:0 0 6px;
+    }
+
+    .modal-content p{
+      margin:6px 0 10px;
+      color:#5b6b7c;
+      font-size:14px;
+    }
+
+    .modal-content label{
+      display:block;
+      font-size:13px;
+      font-weight:bold;
+      color:#34495e;
+      margin-top:8px;
+      margin-bottom:4px;
+    }
+
+    .modal-content input,
+    .modal-content select{
+      width:100%;
+      padding:10px;
+      border-radius:4px;
+      border:1px solid #cfd6df;
+      box-sizing:border-box;
+      margin:6px 0 10px;
+    }
+
+    .modal-summary{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:#f9fbfc;
+      border:1px solid #e5e8ee;
+      border-radius:8px;
+      padding:10px 12px;
+      margin:8px 0 10px;
+      font-size:14px;
+      color:#2c3e50;
+    }
+
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .modal-actions button{
+      flex:1;
+      padding:10px 12px;
+      border-radius:6px;
+      font-weight:bold;
+      border:1px solid transparent;
+      cursor:pointer;
+    }
+
+    .modal-actions .confirm-btn{
+      background:#2e7d32;
+      color:#ffffff;
+      border-color:#2e7d32;
+    }
+
+    .modal-actions .confirm-btn:hover{
+      background:#255f28;
+    }
+
+    .modal-actions .cancel-btn{
+      background:#ffffff;
+      color:#2c3e50;
+      border-color:#cfd6df;
+    }
+
+    .modal-actions .cancel-btn:hover{
+      background:#f4f6f9;
+    }
+
+    .order-details-modal{
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.45);
+      z-index:1600;
+      padding:18px;
+      align-items:flex-start;
+      justify-content:center;
+    }
+
+    .order-details-modal.open{
+      display:flex;
+    }
+
+    .order-details-card{
+      width:min(96vw, 520px);
+      background:#ffffff;
+      border-radius:12px;
+      border:1px solid #d7e7da;
+      overflow:hidden;
+      box-shadow:0 14px 30px rgba(0,0,0,0.25);
+      animation:details-slide-down 260ms ease-out;
+    }
+
+    .order-details-header{
+      background:#2e7d32;
+      color:#ffffff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:12px 14px;
+      font-weight:bold;
+      font-size:16px;
+    }
+
+    .order-details-close-top{
+      background:transparent;
+      border:none;
+      color:#ffffff;
+      font-size:22px;
+      line-height:1;
+      cursor:pointer;
+      padding:0;
+    }
+
+    .order-details-body{
+      padding:14px;
+    }
+
+    .order-details-list{
+      list-style:none;
+      margin:0;
+      padding:0;
+      display:grid;
+      gap:10px;
+    }
+
+    .order-details-list li{
+      border:1px solid #e5ecef;
+      border-radius:8px;
+      padding:10px 12px;
+      background:#f9fbfc;
+      color:#2c3e50;
+      font-size:14px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .order-details-list strong{
+      color:#2e7d32;
+    }
+
+    .order-details-actions{
+      padding:0 14px 14px;
+    }
+
+    .order-details-close-btn{
+      width:100%;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid #2e7d32;
+      background:#2e7d32;
+      color:#ffffff;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    .order-details-close-btn:hover{
+      background:#255f28;
+    }
+
+    @keyframes details-slide-down{
+      from{
+        opacity:0;
+        transform:translateY(-24px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    #map{
+      width:100%;
+      height:300px;
+      border-radius:8px;
+      border:1px solid #e5e8ee;
+    }
+
+    @media (max-width:768px){
+      .dashboard-layout{
+        flex-direction:column;
+      }
+
+      .sidebar{
+        width:100%;
+        height:auto;
+        position:relative;
+        flex:0 0 auto;
+      }
+
+      .main-content{
+        padding:22px 20px;
+      }
+
+      .market-filter-bar{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:600px){
+      .dashboard-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+      }
+
+      .tagline{
+        letter-spacing:0.12em;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="dashboard-shell">
+    <header class="dashboard-header">
+      <div class="brand-mark">
+        <span class="brand-dot"></span>
+        <span>Hill Country Innovators</span>
+      </div>
+      <div class="header-actions">
+        <div class="tagline">Sri Lanka Supply Chain</div>
+        <button id="notificationBell" class="notification-bell" type="button" aria-label="Notifications">
+          <span aria-hidden="true">&#128276;</span>
+          <span id="notificationBadge" class="notification-badge">0</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <div class="sidebar">
+        <h2>Supermarket</h2>
+
+        <button class="menu-btn active" onclick="setActive(this); loadMarketplace()">
+          Marketplace
+        </button>
+
+        <button class="menu-btn" onclick="setActive(this); loadOrders()">
+          My Orders
+        </button>
+
+        <button class="menu-btn" onclick="setActive(this); loadDeliveries()">
+          Deliveries
+        </button>
+        <button onclick="logout()">Logout</button>
+      </div>
+
+      <div class="main-content">
+        <h1 class="page-title">Supermarket Dashboard</h1>
+
+        <div id="content">
+           <!-- dynamic content load -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- ORDER POPUP -->
+<div id="orderModal" class="modal">
+
+  <div class="modal-content">
+
+    <h2 id="modalProduct"></h2>
+
+    <label>Offer Price per KG</label>
+    <input type="number" id="offeredPrice" step="0.01" min="0" oninput="calculateTotal()">
+
+    <label>Required KG</label>
+    <input type="number" id="orderKg" step="0.01" min="0" oninput="calculateTotal()">
+
+    <label>Select Delivery Location</label>
+
+    <input id="locationSearch" type="text" placeholder="Search address">
+
+    <div id="map" style="height:300px; margin-top:10px;"></div>
+
+    <p id="selectedAddress"></p>
+
+    <div class="modal-summary">
+      <span>Total Price</span>
+      <strong>Rs. <span id="totalPrice">0</span></strong>
+    </div>
+
+    <label>Required Delivery Date</label>
+    <input type="date" id="orderDate">
+
+    <div class="modal-actions">
+      <button class="confirm-btn" onclick="submitOrder()">Confirm Order</button>
+      <button class="cancel-btn" onclick="closeOrderPopup()">Cancel</button>
+    </div>
+
+  </div>
+
+</div>
+
+<div id="productInfoModal" class="product-info-modal">
+  <div class="product-info-card">
+    <div class="product-info-header">
+      <span id="productInfoTitle">Product Info</span>
+      <button id="productInfoCloseTop" class="product-info-close-top" type="button" aria-label="Close">&times;</button>
+    </div>
+    <div id="productInfoBody" class="product-info-body"></div>
+    <div class="product-info-actions">
+      <button id="productInfoCloseBottom" class="product-info-close-btn" type="button">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="orderDetailsModal" class="order-details-modal">
+  <div class="order-details-card">
+    <div class="order-details-header">
+      <span>Order Details</span>
+      <button id="orderDetailsCloseTop" class="order-details-close-top" type="button" aria-label="Close">&times;</button>
+    </div>
+    <div class="order-details-body">
+      <ul class="order-details-list">
+        <li><span>Order ID</span><strong id="detailOrderId">-</strong></li>
+        <li><span>Product Name</span><strong id="detailProductName">-</strong></li>
+        <li><span>Quantity</span><strong id="detailQuantity">-</strong></li>
+        <li><span>Price</span><strong id="detailPrice">-</strong></li>
+        <li><span>Status</span><strong id="detailStatus">-</strong></li>
+      </ul>
+    </div>
+    <div class="order-details-actions">
+      <button id="orderDetailsCloseBottom" class="order-details-close-btn" type="button">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="notificationToastContainer"></div>
+<script src="http://localhost:5000/socket.io/socket.io.js"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPYaCJpe_H30LDm7fNlPfIPtBe2MseqE4&libraries=places&loading=async"></script>
+
+<script src="js/supermarket.js"></script>
+
+</body>
+</html>

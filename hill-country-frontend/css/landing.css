@@ -1,0 +1,228 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap");
+
+:root{
+  --green:#18d46b;
+  --dark:#0e1a12;
+  --muted:#6a7d72;
+  --bg:#f5faf7;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family:"Manrope", "Trebuchet MS", Arial, sans-serif;
+  background:var(--bg);
+  color:#0f1b14;
+}
+
+.nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 40px;
+  background:white;
+  border-bottom:1px solid #e8efe9;
+  position:sticky;
+  top:0;
+  z-index:3;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:800;
+}
+
+.leaf{
+  width:16px;
+  height:16px;
+  border-radius:8px 8px 2px 8px;
+  background:linear-gradient(135deg, #1bd86f, #0fb657);
+  display:inline-block;
+}
+
+.links{
+  display:flex;
+  gap:22px;
+  align-items:center;
+}
+
+.links a{
+  text-decoration:none;
+  color:#203428;
+  font-weight:600;
+}
+
+.links .cta{
+  padding:8px 16px;
+  border-radius:8px;
+  background:var(--green);
+  color:#0c1c13;
+  font-weight:800;
+}
+
+.hero{
+  padding:36px 40px 10px 40px;
+}
+
+.hero-card{
+  position:relative;
+  height:360px;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 20px 40px rgba(0,0,0,0.15);
+}
+
+.hero-image{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.hero-content{
+  position:absolute;
+  left:40px;
+  top:50%;
+  transform:translateY(-50%);
+  color:white;
+  max-width:560px;
+}
+
+.hero-content h1{
+  font-size:40px;
+  margin:0 0 12px 0;
+}
+
+.hero-content p{
+  margin:0 0 18px 0;
+  color:#e5f2ea;
+}
+
+.hero-actions{
+  display:flex;
+  gap:12px;
+}
+
+.btn{
+  padding:10px 18px;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:700;
+}
+
+.btn.primary{
+  background:var(--green);
+  color:#0c1c13;
+}
+
+.btn.ghost{
+  background:rgba(255,255,255,0.15);
+  color:white;
+  border:1px solid rgba(255,255,255,0.4);
+}
+
+.roles{
+  padding:30px 40px 60px 40px;
+  text-align:center;
+}
+
+.roles h2{
+  margin:16px 0 8px 0;
+  font-size:28px;
+}
+
+.roles .sub{
+  color:var(--muted);
+  max-width:640px;
+  margin:0 auto 26px auto;
+}
+
+.role-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+  gap:22px;
+}
+
+.role-card{
+  background:white;
+  border-radius:14px;
+  padding:18px;
+  text-align:left;
+  box-shadow:0 10px 26px rgba(0,0,0,0.08);
+}
+
+.role-tag{
+  font-size:12px;
+  color:#2d7a52;
+  font-weight:700;
+}
+
+.role-image{
+  width:100%;
+  height:140px;
+  border-radius:12px;
+  margin:10px 0 14px 0;
+  object-fit:cover;
+  display:block;
+}
+
+.role-link{
+  color:#1aa956;
+  font-weight:700;
+  text-decoration:none;
+}
+
+.footer{
+  background:#0e1913;
+  color:#cfe0d6;
+  padding:40px;
+}
+
+.footer-brand{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  font-weight:800;
+  margin-bottom:16px;
+}
+
+.footer-grid{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr;
+  gap:30px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  padding-bottom:20px;
+}
+
+.footer-grid h4{
+  margin:0 0 8px 0;
+  color:white;
+}
+
+.footer-grid a{
+  display:block;
+  color:#a7c2b4;
+  text-decoration:none;
+  margin:6px 0;
+}
+
+.footer-bottom{
+  padding-top:16px;
+  font-size:12px;
+  color:#9bb3a6;
+}
+
+@media(max-width:760px){
+  .nav{ padding:14px 18px; }
+  .links{ display:none; }
+  .hero{ padding:24px 18px; }
+  .hero-card{ height:300px; }
+  .hero-content{ left:20px; right:20px; }
+  .roles{ padding:26px 18px 50px 18px; }
+  .footer{ padding:28px 18px; }
+  .footer-grid{ grid-template-columns:1fr; }
+}

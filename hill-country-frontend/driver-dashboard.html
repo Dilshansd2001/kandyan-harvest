@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Driver Dashboard</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    .tabSection { display: none; }
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:#f4f6f9;
+      color:#2c3e50;
+      display:block;
+    }
+
+    .dashboard-shell{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      width:100%;
+    }
+
+    .dashboard-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:18px 28px;
+      background:#ffffff;
+      border-bottom:1px solid #e5e8ee;
+      box-shadow:0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .brand-mark{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:bold;
+      font-size:18px;
+    }
+
+    .brand-dot{
+      height:14px;
+      width:14px;
+      border-radius:4px;
+      background:#2d7a52;
+      display:inline-block;
+    }
+
+    .tagline{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.2em;
+      color:#2d7a52;
+      font-weight:bold;
+    }
+
+    .header-actions{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .notification-bell{
+      position:relative;
+      width:38px;
+      height:38px;
+      border-radius:50%;
+      border:1px solid #2e7d32;
+      background:#ffffff;
+      color:#2e7d32;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px;
+      cursor:pointer;
+    }
+
+    .notification-badge{
+      position:absolute;
+      top:-6px;
+      right:-6px;
+      min-width:20px;
+      height:20px;
+      border-radius:10px;
+      background:#d32f2f;
+      color:#ffffff;
+      font-size:11px;
+      font-weight:700;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:0 5px;
+      border:2px solid #ffffff;
+    }
+
+    #notificationToastContainer{
+      position:fixed;
+      top:18px;
+      right:18px;
+      z-index:1400;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-width:360px;
+      width:calc(100vw - 36px);
+      pointer-events:none;
+    }
+
+    .notification-toast{
+      background:#e8f5e9;
+      border-left:4px solid #2e7d32;
+      border-radius:10px;
+      color:#1b5e20;
+      box-shadow:0 8px 18px rgba(46,125,50,0.22);
+      padding:12px 14px;
+      font-size:14px;
+      font-weight:600;
+      pointer-events:auto;
+      cursor:pointer;
+      animation:toast-in 220ms ease-out;
+    }
+
+    @keyframes toast-in{
+      from{
+        opacity:0;
+        transform:translateY(-8px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    .dashboard-layout{
+      display:flex;
+      flex:1;
+      width:100%;
+      align-items:stretch;
+    }
+
+    .sidebar{
+      background:#ffffff;
+      color:#2c3e50;
+      border-right:1px solid #e5e8ee;
+      box-shadow:0 1px 4px rgba(0,0,0,0.06);
+      position:relative;
+      height:auto;
+      flex:0 0 220px;
+    }
+
+    .sidebar h2{
+      color:#2c3e50;
+    }
+
+    .sidebar button,
+    .menu-btn{
+      color:#2c3e50;
+      border:1px solid transparent;
+      border-radius:6px;
+    }
+
+    .sidebar button:hover,
+    .menu-btn:hover{
+      background:#f4f6f9;
+      border-color:#e1e6ee;
+    }
+
+    .menu-btn.active{
+      background:#2d7a52;
+      color:#ffffff;
+    }
+
+    .main-content{
+      margin-left:0;
+      padding:26px 28px;
+      width:100%;
+    }
+
+    .page-title{
+      margin:4px 0 18px;
+    }
+
+    .panel-card{
+      background:#ffffff;
+      border:1px solid #d6e6da;
+      border-radius:12px;
+      box-shadow:0 6px 16px rgba(13,43,24,0.08);
+      padding:22px;
+    }
+
+    .panel-card h2{
+      margin-top:0;
+    }
+
+    .analytics{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap:12px;
+      margin-top:10px;
+    }
+
+    .analytics-card{
+      background:#f9fbfc;
+      border:1px solid #e5e8ee;
+      border-radius:10px;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .analytics-card span{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+      color:#7a8796;
+    }
+
+    .analytics-card strong{
+      font-size:20px;
+      color:#2c3e50;
+    }
+
+    .analytics-card.highlight{
+      border-color:#2d7a52;
+      box-shadow:0 4px 10px rgba(45,122,82,0.12);
+    }
+
+    #availableDeliveries,
+    #activeDeliveries,
+    #completedDeliveries,
+    #driverRevenueList{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap:14px;
+      margin-top:12px;
+    }
+
+    #availableDeliveries .card,
+    #activeDeliveries .card,
+    #completedDeliveries .card,
+    #driverRevenueList .card{
+      background:#ffffff;
+      border:1px solid #e6e9ef;
+      border-radius:12px;
+      padding:16px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    #driverRevenueList .revenue-card{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      color:#5b6b7c;
+      font-size:14px;
+    }
+
+    .revenue-card h3{
+      margin:0 0 4px;
+      color:#2c3e50;
+      font-size:16px;
+    }
+
+    .revenue-badge{
+      display:inline-flex;
+      align-items:center;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:bold;
+      text-transform:uppercase;
+      letter-spacing:0.06em;
+      background:#eef2f7;
+      color:#2c3e50;
+      width:fit-content;
+    }
+
+    #driverMap{
+      width:100%;
+      height:360px;
+      border-radius:12px;
+      border:1px solid #d6e6da;
+      margin-top:10px;
+      background:linear-gradient(180deg, #f4fbf6, #eef7f1);
+      box-shadow:inset 0 0 0 1px rgba(46,125,50,0.06), 0 8px 18px rgba(11,44,24,0.1);
+    }
+
+    .delivery-card h3{
+      margin:0 0 6px;
+      font-size:16px;
+      color:#2c3e50;
+    }
+
+    .active-delivery-card{
+      border:1px solid #cfe2d4;
+      box-shadow:0 8px 18px rgba(10,44,24,0.08);
+      border-radius:12px;
+    }
+
+    .active-delivery-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+      border-bottom:1px solid #e6efe8;
+      padding-bottom:10px;
+    }
+
+    .active-delivery-id{
+      font-size:15px;
+      font-weight:700;
+      color:#224737;
+    }
+
+    .route-list{
+      display:grid;
+      gap:8px;
+      margin-bottom:10px;
+    }
+
+    .route-item{
+      display:flex;
+      align-items:flex-start;
+      gap:8px;
+      font-size:14px;
+      color:#42586a;
+      line-height:1.45;
+    }
+
+    .route-item i{
+      color:#2e7d32;
+      margin-top:2px;
+    }
+
+    .finance-box{
+      background:#f3faf5;
+      border:1px solid #cfe2d4;
+      border-radius:10px;
+      padding:10px 12px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .finance-item{
+      display:grid;
+      gap:4px;
+    }
+
+    .finance-item span{
+      font-size:12px;
+      color:#5f7485;
+      text-transform:uppercase;
+      letter-spacing:0.04em;
+    }
+
+    .finance-item strong{
+      font-size:16px;
+      color:#2e7d32;
+    }
+
+    .delivery-meta{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      color:#5b6b7c;
+      font-size:14px;
+    }
+
+    .delivery-status{
+      display:inline-flex;
+      align-items:center;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:bold;
+      text-transform:uppercase;
+      letter-spacing:0.06em;
+      background:#f4f6f9;
+      color:#2c3e50;
+      margin-top:8px;
+      width:fit-content;
+    }
+
+    .delivery-status.assigned{
+      background:#fff4da;
+      color:#9c6d00;
+      border:1px solid #f0d49b;
+    }
+
+    .delivery-status.in_transit{
+      background:#e8f5e9;
+      color:#2e7d32;
+      border:1px solid #bfe0c3;
+    }
+
+    .delivery-status.completed{
+      background:#eef2f7;
+      color:#2c3e50;
+    }
+
+    .delivery-actions{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+      align-items:stretch;
+    }
+
+    .delivery-actions .btn{
+      flex:1;
+      padding:10px 12px;
+      border-radius:6px;
+      font-weight:bold;
+      border:1px solid transparent;
+      cursor:pointer;
+    }
+
+    .delivery-actions .btn.primary{
+      background:#2e7d32;
+      border-color:#2e7d32;
+      color:#ffffff;
+    }
+
+    .delivery-actions .btn.primary:hover{
+      background:#255f28;
+    }
+
+    .delivery-actions .btn.ghost{
+      border-color:#c7d9cc;
+      color:#325247;
+      background:#ffffff;
+    }
+
+    .delivery-actions .btn.ghost{
+      background:#ffffff;
+      color:#2c3e50;
+      border-color:#cfd6df;
+    }
+
+    .delivery-actions .btn.ghost:hover{
+      background:#f4f6f9;
+    }
+
+    @media (max-width:768px){
+      .dashboard-layout{
+        flex-direction:column;
+      }
+
+      .sidebar{
+        width:100%;
+        height:auto;
+        position:relative;
+        flex:0 0 auto;
+      }
+
+      .main-content{
+        padding:22px 20px;
+      }
+    }
+
+    @media (max-width:600px){
+      .dashboard-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+      }
+
+      .tagline{
+        letter-spacing:0.12em;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dashboard-shell">
+    <header class="dashboard-header">
+      <div class="brand-mark">
+        <span class="brand-dot"></span>
+        <span>Hill Country Innovators</span>
+      </div>
+      <div class="header-actions">
+        <div class="tagline">Sri Lanka Supply Chain</div>
+        <button id="notificationBell" class="notification-bell" type="button" aria-label="Notifications">
+          <span aria-hidden="true">&#128276;</span>
+          <span id="notificationBadge" class="notification-badge">0</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <h2>Driver Panel</h2>
+
+        <button class="menu-btn" onclick="setActive(this); showDriverTab('available')">Available Deliveries</button>
+        <button class="menu-btn" onclick="setActive(this); showDriverTab('active')">Active Deliveries</button>
+        <button class="menu-btn" onclick="setActive(this); showDriverTab('completed')">Completed Deliveries</button>
+        <button class="menu-btn" onclick="setActive(this); showDriverTab('revenue')">My Revenue</button>
+        <button onclick="logout()">Logout</button>
+      </div>
+
+      <div class="main-content">
+        <h1 class="page-title">Driver Dashboard</h1>
+
+        <!-- ================= AVAILABLE REQUESTS ================= -->
+        <div id="availableTab" class="tabSection panel-card">
+          <h2>Available Delivery Requests</h2>
+          <div id="availableDeliveries"></div>
+        </div>
+
+        <div id="activeTab" class="tabSection panel-card">
+          <h2>Active Deliveries</h2>
+          <div id="activeDeliveries"></div>
+
+          <h2>Navigation</h2>
+          <div class="navigation-shell">
+            <div id="driverMap"></div>
+            <p id="etaInfo"></p>
+            <div id="navActions"></div>
+          </div>
+        </div>
+
+        <div id="completedTab" class="tabSection panel-card">
+          <h2>Completed Deliveries</h2>
+          <div id="completedDeliveries"></div>
+        </div>
+
+        <div id="revenueTab" class="tabSection panel-card">
+          <h2>My Revenue</h2>
+          <div class="analytics">
+            <div class="analytics-card">
+              <span>Total Completed Deliveries</span>
+              <strong id="driverTotalCompleted">0</strong>
+            </div>
+            <div class="analytics-card highlight">
+              <span>Total Hire Charges</span>
+              <strong id="driverTotalCharges">Rs 0</strong>
+            </div>
+          </div>
+          <div id="driverRevenueList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="notificationToastContainer"></div>
+  <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPYaCJpe_H30LDm7fNlPfIPtBe2MseqE4&libraries=places&loading=async"></script>
+  <script src="js/driver.js"></script>
+
+</body>
+</html>
+    .navigation-shell{
+      margin-top:16px;
+      border:1px solid #cfe2d4;
+      border-radius:12px;
+      padding:12px;
+      background:#fbfefc;
+      box-shadow:0 6px 16px rgba(10,44,24,0.08);
+    }
+
+    #etaInfo{
+      margin:10px 4px 0;
+      color:#4d6374;
+      font-weight:600;
+      font-size:13px;
+    }
+
+    #navActions{
+      margin-top:10px;
+    }
+
+    #navActions button{
+      border:1px solid #2e7d32;
+      color:#2e7d32;
+      background:#ffffff;
+      border-radius:8px;
+      padding:9px 12px;
+      font-weight:700;
+      cursor:pointer;
+    }
