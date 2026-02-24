@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hill Country Innovators • Register</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <style>
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:#f4f6f9;
+      color:#2c3e50;
+      display:block;
+    }
+
+    .wizard-shell{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      width:100%;
+    }
+
+    .wizard-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:18px 28px;
+      background:#ffffff;
+      border-bottom:1px solid #e5e8ee;
+      box-shadow:0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .brand-mark{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:bold;
+      font-size:18px;
+    }
+
+    .brand-dot{
+      height:14px;
+      width:14px;
+      border-radius:4px;
+      background:#2d7a52;
+      display:inline-block;
+    }
+
+    .tagline{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.2em;
+      color:#2d7a52;
+      font-weight:bold;
+    }
+
+    .wizard-main{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:40px 16px;
+    }
+
+    .wizard-card{
+      width:min(94vw, 520px);
+      background:#ffffff;
+      border-radius:12px;
+      padding:28px 28px 24px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.12);
+      border:1px solid #e6e9ef;
+    }
+
+    .wizard-card h1{
+      margin:6px 0 4px;
+      text-align:center;
+    }
+
+    .wizard-card p{
+      text-align:center;
+      color:#5b6b7c;
+      margin:0 0 18px;
+    }
+
+    .wizard-section{
+      margin-top:14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .wizard-section h3{
+      margin:0;
+      font-size:14px;
+      color:#34495e;
+    }
+
+    .wizard-input,
+    .wizard-select,
+    .wizard-file{
+      width:100%;
+      padding:10px;
+      border-radius:4px;
+      border:1px solid #cfd6df;
+      box-sizing:border-box;
+      background:#ffffff;
+      font-size:14px;
+    }
+
+    .wizard-input:focus,
+    .wizard-select:focus,
+    .wizard-file:focus{
+      outline:none;
+      border-color:#9ab9a8;
+      box-shadow:0 0 0 3px rgba(45,122,82,0.15);
+    }
+
+    .wizard-actions{
+      display:flex;
+      gap:10px;
+    }
+
+    .wizard-actions button{
+      flex:1;
+    }
+
+    .primary-btn{
+      background:#2d7a52;
+      color:#ffffff;
+      padding:12px;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    .primary-btn:hover{
+      background:#246644;
+    }
+
+    .secondary-btn{
+      background:#ffffff;
+      border:1px solid #cfd6df;
+      color:#2c3e50;
+      padding:12px;
+      border-radius:6px;
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    .secondary-btn:hover{
+      background:#f4f6f9;
+    }
+
+    .wizard-footer{
+      text-align:center;
+      padding:12px 16px 24px;
+      font-size:12px;
+      color:#7a8796;
+    }
+
+    .wizard-msg{
+      margin-top:14px;
+      text-align:center;
+      font-size:14px;
+      color:#5b6b7c;
+      min-height:20px;
+    }
+
+    .hidden{
+      display:none;
+    }
+
+    @media (max-width:600px){
+      .wizard-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+      }
+
+      .tagline{
+        letter-spacing:0.12em;
+      }
+
+      .wizard-card{
+        width:min(96vw, 520px);
+        padding:22px 20px;
+      }
+
+      .wizard-actions{
+        flex-direction:column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wizard-shell">
+    <header class="wizard-header">
+      <div class="brand-mark">
+        <span class="brand-dot"></span>
+        <span>Hill Country Innovators</span>
+      </div>
+      <div class="tagline">Sri Lanka Supply Chain</div>
+    </header>
+
+    <main class="wizard-main">
+      <div class="wizard-card">
+        <h1>Registration Wizard</h1>
+        <p>Join Sri Lanka's agri-supply network</p>
+
+        <!-- ================= STEP 1 ================= -->
+        <div id="step1" class="wizard-section">
+          <h3>Account Details</h3>
+
+          <select id="role" class="wizard-select">
+            <option value="">Select Role</option>
+            <option value="farmer">Farmer</option>
+            <option value="supermarket">Supermarket</option>
+            <option value="driver">Driver</option>
+          </select>
+
+          <input id="fullName" class="wizard-input" placeholder="Full Name">
+          <input id="email" class="wizard-input" placeholder="Email">
+          <input id="password" class="wizard-input" type="password" placeholder="Password">
+          <input id="phone" class="wizard-input" placeholder="Contact Number">
+
+          <button type="button" onclick="nextStep(2)" class="primary-btn">Next</button>
+        </div>
+
+        <!-- ================= STEP 2 ================= -->
+        <div id="step2" class="wizard-section hidden">
+          <h3>Role Specific Details</h3>
+          <div id="roleFields" class="wizard-section"></div>
+
+          <div class="wizard-actions">
+            <button type="button" onclick="nextStep(3)" class="primary-btn">Next</button>
+            <button type="button" onclick="prevStep(1)" class="secondary-btn">Back</button>
+          </div>
+        </div>
+
+        <!-- ================= STEP 3 ================= -->
+        <div id="step3" class="wizard-section hidden">
+          <h3>Upload Documents</h3>
+          <div id="fileFields" class="wizard-section"></div>
+
+          <div class="wizard-actions">
+            <button type="button" onclick="nextStep(4)" class="primary-btn">Next</button>
+            <button type="button" onclick="prevStep(2)" class="secondary-btn">Back</button>
+          </div>
+        </div>
+
+        <!-- ================= STEP 4 ================= -->
+        <div id="step4" class="wizard-section hidden">
+          <div class="wizard-actions">
+            <button type="button" onclick="register()" class="primary-btn">Submit Registration</button>
+            <button type="button" onclick="prevStep(3)" class="secondary-btn">Back</button>
+          </div>
+          <button id="loginBtn" type="button" onclick="window.location='login.html'" class="secondary-btn hidden">Login</button>
+        </div>
+
+        <p id="msg" class="wizard-msg"></p>
+      </div>
+    </main>
+
+    <footer class="wizard-footer">
+      © 2024 Hill Country Innovators. Empowering Sri Lankan Agriculture.
+    </footer>
+  </div>
+
+  <script src="js/registerWizard.js"></script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <style>
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:#f4f6f9;
+      color:#2c3e50;
+      display:block;
+    }
+
+    .dashboard-shell{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      width:100%;
+    }
+
+    .dashboard-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:18px 28px;
+      background:#ffffff;
+      border-bottom:1px solid #e5e8ee;
+      box-shadow:0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .brand-mark{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:bold;
+      font-size:18px;
+    }
+
+    .brand-dot{
+      height:14px;
+      width:14px;
+      border-radius:4px;
+      background:#2d7a52;
+      display:inline-block;
+    }
+
+    .tagline{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.2em;
+      color:#2d7a52;
+      font-weight:bold;
+    }
+
+    .dashboard-layout{
+      display:flex;
+      flex:1;
+      width:100%;
+      align-items:stretch;
+    }
+
+    .sidebar{
+      background:#ffffff;
+      color:#2c3e50;
+      border-right:1px solid #e5e8ee;
+      box-shadow:0 1px 4px rgba(0,0,0,0.06);
+      position:relative;
+      height:auto;
+      flex:0 0 220px;
+    }
+
+    .sidebar h2{
+      color:#2c3e50;
+    }
+
+    .sidebar button,
+    .menu-btn{
+      color:#2c3e50;
+      border:1px solid transparent;
+      border-radius:6px;
+    }
+
+    .sidebar button:hover,
+    .menu-btn:hover{
+      background:#f4f6f9;
+      border-color:#e1e6ee;
+    }
+
+    .menu-btn.active{
+      background:#2d7a52;
+      color:#ffffff;
+    }
+
+    .main-content{
+      margin-left:0;
+      padding:26px 28px;
+      width:100%;
+    }
+
+    .page-title{
+      margin:4px 0 18px;
+    }
+
+    .panel-card{
+      background:#ffffff;
+      border:1px solid #e6e9ef;
+      border-radius:12px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.12);
+      padding:22px;
+    }
+
+    .panel-card h2{
+      margin-top:0;
+    }
+
+    .data-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap:14px;
+      margin-top:12px;
+    }
+
+    .data-card{
+      background:#ffffff;
+      border:1px solid #e6e9ef;
+      border-radius:12px;
+      padding:16px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .data-card h3{
+      margin:0 0 6px;
+      font-size:16px;
+      color:#2c3e50;
+    }
+
+    .data-meta{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      color:#5b6b7c;
+      font-size:14px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:bold;
+      text-transform:uppercase;
+      letter-spacing:0.06em;
+      background:#f4f6f9;
+      color:#2c3e50;
+      margin-top:8px;
+      width:fit-content;
+    }
+
+    .badge.pending{
+      background:#fff6e5;
+      color:#8a5b00;
+    }
+
+    .badge.approved{
+      background:#e9f6ef;
+      color:#2d7a52;
+    }
+
+    .badge.rejected{
+      background:#fdecea;
+      color:#c0392b;
+    }
+
+    .badge.delivered{
+      background:#eef2f7;
+      color:#2c3e50;
+    }
+
+    .card-actions{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .card-actions .btn{
+      flex:1;
+      padding:10px 12px;
+      border-radius:6px;
+      font-weight:bold;
+      border:1px solid transparent;
+      cursor:pointer;
+    }
+
+    .card-actions .btn.primary{
+      background:#2d7a52;
+      color:#ffffff;
+    }
+
+    .card-actions .btn.primary:hover{
+      background:#246644;
+    }
+
+    .card-actions .btn.ghost{
+      background:#ffffff;
+      color:#2c3e50;
+      border-color:#cfd6df;
+    }
+
+    .card-actions .btn.ghost:hover{
+      background:#f4f6f9;
+    }
+
+    @media (max-width:768px){
+      .dashboard-layout{
+        flex-direction:column;
+      }
+
+      .sidebar{
+        width:100%;
+        height:auto;
+        position:relative;
+        flex:0 0 auto;
+      }
+
+      .main-content{
+        padding:22px 20px;
+      }
+    }
+
+    @media (max-width:600px){
+      .dashboard-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+      }
+
+      .tagline{
+        letter-spacing:0.12em;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dashboard-shell">
+    <header class="dashboard-header">
+      <div class="brand-mark">
+        <span class="brand-dot"></span>
+        <span>Hill Country Innovators</span>
+      </div>
+      <div class="tagline">Sri Lanka Supply Chain</div>
+    </header>
+
+    <div class="dashboard-layout">
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <h2>Admin Panel</h2>
+
+        <button class="menu-btn" onclick="setActive(this); loadPendingUsers()">Pending Users</button>
+        <button class="menu-btn" onclick="setActive(this); loadAllUsers()">All Users</button>
+        <button class="menu-btn" onclick="setActive(this); loadOrders()">Orders</button>
+        <button class="menu-btn" onclick="setActive(this); loadDeliveries()">Deliveries</button>
+        <button class="menu-btn" onclick="logout()">Logout</button>
+      </div>
+
+      <!-- MAIN CONTENT -->
+      <div class="main-content">
+        <h1 class="page-title">Admin Dashboard</h1>
+        <div id="content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/admin.js"></script>
+
+</body>
+</html>

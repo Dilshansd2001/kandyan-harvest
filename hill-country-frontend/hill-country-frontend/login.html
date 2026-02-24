@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hill Country Innovators • Login</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <style>
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:#f4f6f9;
+      color:#2c3e50;
+      display:block;
+    }
+
+    .login-shell{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      width:100%;
+    }
+
+    .login-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:18px 28px;
+      background:#ffffff;
+      border-bottom:1px solid #e5e8ee;
+      box-shadow:0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .brand-mark{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:bold;
+      font-size:18px;
+    }
+
+    .brand-dot{
+      height:14px;
+      width:14px;
+      border-radius:4px;
+      background:#2d7a52;
+      display:inline-block;
+    }
+
+    .tagline{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.2em;
+      color:#2d7a52;
+      font-weight:bold;
+    }
+
+    .login-main{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:40px 16px;
+    }
+
+    .login-card{
+      width:min(92vw, 420px);
+      background:#ffffff;
+      border-radius:12px;
+      padding:28px 28px 24px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.12);
+      border:1px solid #e6e9ef;
+    }
+
+    .login-card h1{
+      margin:6px 0 4px;
+      text-align:center;
+    }
+
+    .login-card p{
+      text-align:center;
+      color:#5b6b7c;
+      margin:0 0 18px;
+    }
+
+    .login-field{
+      margin-bottom:12px;
+    }
+
+    .login-field label{
+      display:block;
+      font-size:14px;
+      font-weight:bold;
+      color:#34495e;
+      margin-bottom:6px;
+    }
+
+    .login-field input{
+      width:100%;
+      padding:10px;
+      border-radius:4px;
+      border:1px solid #cfd6df;
+      box-sizing:border-box;
+    }
+
+    .login-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      font-size:14px;
+      color:#5b6b7c;
+      margin-top:6px;
+      gap:12px;
+    }
+
+    .login-actions{
+      margin-top:14px;
+      display:grid;
+      gap:10px;
+    }
+
+    .login-btn{
+      background:#2d7a52;
+      color:#ffffff;
+      padding:12px;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    .login-btn:hover{
+      background:#246644;
+    }
+
+    .secondary-btn{
+      background:#ffffff;
+      border:1px solid #cfd6df;
+      color:#2c3e50;
+      padding:12px;
+      border-radius:6px;
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    .secondary-btn:hover{
+      background:#f4f6f9;
+    }
+
+    .login-footer{
+      text-align:center;
+      padding:12px 16px 24px;
+      font-size:12px;
+      color:#7a8796;
+    }
+
+    @media (max-width:600px){
+      .login-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+      }
+
+      .tagline{
+        letter-spacing:0.12em;
+      }
+
+      .login-card{
+        width:min(94vw, 420px);
+        padding:22px 20px;
+      }
+
+      .login-row{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-shell">
+    <header class="login-header">
+      <div class="brand-mark">
+        <span class="brand-dot"></span>
+        <span>Hill Country Innovators</span>
+      </div>
+      <div class="tagline">Sri Lanka Supply Chain</div>
+    </header>
+
+    <main class="login-main">
+      <div class="login-card">
+        <h1>Hill Country Innovators</h1>
+        <p>Secure access to the Sri Lankan agri-supply network</p>
+
+        <div class="login-field">
+          <label for="email">Email Address</label>
+          <input id="email" type="email" placeholder="e.g., farmer@hillcountry.lk">
+        </div>
+
+        <div class="login-field">
+          <label for="password">Password</label>
+          <input id="password" type="password" placeholder="Enter your password">
+        </div>
+
+        <div class="login-row">
+          <label>
+            <input type="checkbox">
+            Remember me
+          </label>
+          <a href="forgot-password.html">Forgot Password?</a>
+        </div>
+
+        <div class="login-actions">
+          <button onclick="login()" class="login-btn">Log In</button>
+          <button onclick="window.location='register-wizard.html'" class="secondary-btn">Register</button>
+          <p id="error" class="text-center text-sm text-red-600 min-h-[20px]"></p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="login-footer">
+      © 2024 Hill Country Innovators. Empowering Sri Lankan Agriculture.
+    </footer>
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>

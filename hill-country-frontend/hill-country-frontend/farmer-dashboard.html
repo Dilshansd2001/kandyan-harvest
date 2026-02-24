@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Farmer Dashboard</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <style>
+    .tabSection { display: none; }
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:#f4f6f9;
+      color:#2c3e50;
+      display:block;
+    }
+
+    .dashboard-shell{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      width:100%;
+    }
+
+    .dashboard-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:18px 28px;
+      background:#ffffff;
+      border-bottom:1px solid #e5e8ee;
+      box-shadow:0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .brand-mark{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:bold;
+      font-size:18px;
+    }
+
+    .brand-dot{
+      height:14px;
+      width:14px;
+      border-radius:4px;
+      background:#2d7a52;
+      display:inline-block;
+    }
+
+    .tagline{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.2em;
+      color:#2d7a52;
+      font-weight:bold;
+    }
+
+    .header-actions{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .notification-bell{
+      position:relative;
+      width:38px;
+      height:38px;
+      border-radius:50%;
+      border:1px solid #2e7d32;
+      background:#ffffff;
+      color:#2e7d32;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px;
+      cursor:pointer;
+    }
+
+    .notification-badge{
+      position:absolute;
+      top:-6px;
+      right:-6px;
+      min-width:20px;
+      height:20px;
+      border-radius:10px;
+      background:#d32f2f;
+      color:#ffffff;
+      font-size:11px;
+      font-weight:700;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:0 5px;
+      border:2px solid #ffffff;
+    }
+
+    #notificationToastContainer{
+      position:fixed;
+      top:18px;
+      right:18px;
+      z-index:1400;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-width:360px;
+      width:calc(100vw - 36px);
+      pointer-events:none;
+    }
+
+    .notification-toast{
+      background:#e8f5e9;
+      border-left:4px solid #2e7d32;
+      border-radius:10px;
+      color:#1b5e20;
+      box-shadow:0 8px 18px rgba(46,125,50,0.22);
+      padding:12px 14px;
+      font-size:14px;
+      font-weight:600;
+      pointer-events:auto;
+      cursor:pointer;
+      animation:toast-in 220ms ease-out;
+    }
+
+    @keyframes toast-in{
+      from{
+        opacity:0;
+        transform:translateY(-8px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    .dashboard-layout{
+      display:flex;
+      flex:1;
+      width:100%;
+      align-items:stretch;
+    }
+
+    .sidebar{
+      background:#ffffff;
+      color:#2c3e50;
+      border-right:1px solid #e5e8ee;
+      box-shadow:0 1px 4px rgba(0,0,0,0.06);
+      position:relative;
+      height:auto;
+      flex:0 0 220px;
+    }
+
+    .sidebar h2{
+      color:#2c3e50;
+    }
+
+    .sidebar button,
+    .menu-btn{
+      color:#2c3e50;
+      border:1px solid transparent;
+      border-radius:6px;
+    }
+
+    .sidebar button:hover,
+    .menu-btn:hover{
+      background:#f4f6f9;
+      border-color:#e1e6ee;
+    }
+
+    .menu-btn.active{
+      background:#2d7a52;
+      color:#ffffff;
+    }
+
+    .main-content{
+      margin-left:0;
+      padding:26px 28px;
+      width:100%;
+    }
+
+    .page-title{
+      margin:0 0 18px;
+      padding:0;
+    }
+
+    .panel-card{
+      background:#ffffff;
+      border:1px solid #e6e9ef;
+      border-radius:12px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.12);
+      padding:22px;
+    }
+
+    .panel-card h2{
+      margin-top:0;
+    }
+
+    .analytics{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap:12px;
+      margin-top:10px;
+    }
+
+    .analytics-card{
+      background:#f9fbfc;
+      border:1px solid #e5e8ee;
+      border-radius:10px;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .analytics-card span{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+      color:#7a8796;
+    }
+
+    .analytics-card strong{
+      font-size:20px;
+      color:#2c3e50;
+    }
+
+    .analytics-card.highlight{
+      border-color:#2d7a52;
+      box-shadow:0 4px 10px rgba(45,122,82,0.12);
+    }
+
+    .orders-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap:14px;
+      margin-top:12px;
+    }
+
+    .order-card{
+      background:#ffffff;
+      border:1px solid #e6e9ef;
+      border-radius:12px;
+      padding:16px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .order-card h3{
+      margin:0 0 6px;
+      font-size:16px;
+      color:#2c3e50;
+    }
+
+    .order-meta{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      color:#5b6b7c;
+      font-size:14px;
+    }
+
+    .order-status{
+      display:inline-flex;
+      align-items:center;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:bold;
+      text-transform:uppercase;
+      letter-spacing:0.06em;
+      background:#f4f6f9;
+      color:#2c3e50;
+      margin-top:8px;
+      width:fit-content;
+    }
+
+    .order-status.pending{
+      background:#fff6e5;
+      color:#8a5b00;
+    }
+
+    .order-status.accepted{
+      background:#e9f6ef;
+      color:#2d7a52;
+    }
+
+    .order-status.rejected{
+      background:#fdecea;
+      color:#c0392b;
+    }
+
+    .order-actions{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .order-actions .btn{
+      flex:1;
+      padding:10px 12px;
+      border-radius:6px;
+      font-weight:bold;
+      border:1px solid transparent;
+      cursor:pointer;
+    }
+
+    .order-actions .btn.accept{
+      background:#2d7a52;
+      color:#ffffff;
+    }
+
+    .order-actions .btn.accept:hover{
+      background:#246644;
+    }
+
+    .order-actions .btn.reject{
+      background:#ffffff;
+      color:#2c3e50;
+      border-color:#cfd6df;
+    }
+
+    .order-actions .btn.reject:hover{
+      background:#f4f6f9;
+    }
+
+    #harvestMap{
+      border-radius:8px;
+      border:1px solid #e5e8ee;
+    }
+
+    #content > .tabSection{
+      margin-top:12px;
+    }
+
+    #myHarvestList{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap:16px;
+      margin-top:12px;
+    }
+
+    #myHarvestList > div{
+      background:#ffffff;
+      border:1px solid #e6e9ef;
+      border-radius:10px;
+      padding:14px;
+      box-shadow:0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    #myHarvestList img{
+      width:100%;
+      height:160px;
+      object-fit:cover;
+      border-radius:8px;
+      border:1px solid #e5e8ee;
+    }
+
+    #myHarvestList h3,
+    #myHarvestList h4{
+      margin:10px 0 6px;
+      font-size:16px;
+      color:#2c3e50;
+    }
+
+    #myHarvestList p{
+      margin:4px 0;
+      color:#5b6b7c;
+      font-size:14px;
+    }
+
+    .harvest-actions .btn{
+      margin-top:10px;
+      background:#2d7a52;
+      color:#ffffff;
+      border:none;
+      padding:8px 12px;
+      border-radius:6px;
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    .harvest-actions .btn:hover{
+      background:#246644;
+    }
+
+    .harvest-actions{
+      display:flex;
+      gap:10px;
+    }
+
+    .harvest-actions .btn.ghost{
+      background:#ffffff;
+      color:#2c3e50;
+      border:1px solid #cfd6df;
+    }
+
+    .harvest-actions .btn.ghost:hover{
+      background:#f4f6f9;
+    }
+
+    .harvest-actions .btn.danger{
+      background:#d9534f;
+    }
+
+    .harvest-actions .btn.danger:hover{
+      background:#c9302c;
+    }
+
+    .slider{
+      position:relative;
+      width:100%;
+      height:180px;
+      overflow:hidden;
+      margin:10px 0 6px;
+      border-radius:8px;
+      border:1px solid #e5e8ee;
+      background:#f8fafc;
+    }
+
+    .slider img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .slider button{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      background:rgba(0,0,0,0.55);
+      color:#ffffff;
+      border:none;
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .slider button:first-of-type{
+      left:8px;
+    }
+
+    .slider button:last-of-type{
+      right:8px;
+    }
+
+    .modal{
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.5);
+      padding:24px;
+      z-index:1000;
+    }
+
+    .modal.open{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .modal-card{
+      background:#ffffff;
+      width:min(96vw, 520px);
+      border-radius:12px;
+      border:1px solid #e6e9ef;
+      box-shadow:0 10px 30px rgba(0,0,0,0.2);
+      padding:20px 22px;
+    }
+
+    .modal-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:12px;
+    }
+
+    .modal-header h3{
+      margin:0;
+    }
+
+    .modal-close{
+      background:#ffffff;
+      border:1px solid #cfd6df;
+      border-radius:6px;
+      padding:6px 10px;
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .modal-actions button{
+      flex:1;
+    }
+
+    .upload-field{
+      margin-top:10px;
+    }
+
+    .file-input{
+      display:none;
+    }
+
+    .upload-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:#2d7a52;
+      color:#ffffff;
+      border:1px solid #2d7a52;
+      border-radius:8px;
+      padding:10px 14px;
+      font-weight:bold;
+      cursor:pointer;
+      transition:background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .upload-btn:hover{
+      background:#246644;
+      border-color:#246644;
+    }
+
+    .upload-note{
+      margin:8px 0 0;
+      color:#5b6b7c;
+      font-size:13px;
+    }
+
+    .upload-preview{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
+    .upload-preview img{
+      width:72px;
+      height:72px;
+      object-fit:cover;
+      border-radius:8px;
+      border:1px solid #d9e2ec;
+      box-shadow:0 1px 3px rgba(0,0,0,0.12);
+    }
+
+    .market-analytics-card{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .market-analytics-top{
+      display:grid;
+      grid-template-columns: 180px 1fr;
+      gap:12px;
+      align-items:center;
+    }
+
+    .market-analytics-top label{
+      font-size:14px;
+      font-weight:600;
+      color:#2e7d32;
+    }
+
+    .market-analytics-top select{
+      border:1px solid #2e7d32;
+    }
+
+    .market-chart-wrap{
+      background:#f9fbfc;
+      border:1px solid #e5e8ee;
+      border-radius:10px;
+      padding:12px;
+      min-height:320px;
+    }
+
+    .prediction-box{
+      background:#f3faf6;
+      border:1px solid #cfe8da;
+      border-radius:10px;
+      padding:14px;
+    }
+
+    .prediction-box h3{
+      margin:0 0 8px;
+      color:#2d7a52;
+      font-size:16px;
+    }
+
+    .prediction-list{
+      margin:0;
+      padding-left:18px;
+      color:#2c3e50;
+    }
+
+    .prediction-list li{
+      margin:6px 0;
+    }
+
+    .add-harvest-grid{
+      display:grid;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .form-row{
+      display:grid;
+      grid-template-columns: 150px 1fr;
+      align-items:center;
+      gap:12px;
+    }
+
+    .form-row label{
+      font-size:14px;
+      font-weight:600;
+      color:#34495e;
+    }
+
+    .form-row input,
+    .form-row select{
+      margin:0;
+    }
+
+    .form-row textarea{
+      width:100%;
+      margin:0;
+      border:1px solid #cfd6df;
+      border-radius:5px;
+      padding:10px;
+      height:80px;
+      font-family:inherit;
+      font-size:14px;
+      resize:vertical;
+      box-sizing:border-box;
+    }
+
+    @media (max-width:768px){
+      .dashboard-layout{
+        flex-direction:column;
+      }
+
+      .sidebar{
+        width:100%;
+        height:auto;
+        position:relative;
+        flex:0 0 auto;
+      }
+
+      .main-content{
+        padding:22px 20px;
+      }
+    }
+
+    @media (max-width:600px){
+      .dashboard-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+      }
+
+      .tagline{
+        letter-spacing:0.12em;
+      }
+
+      #myHarvestList{
+        grid-template-columns:1fr;
+      }
+
+      .modal-card{
+        width:min(96vw, 520px);
+        padding:18px 16px;
+      }
+
+      .modal-actions{
+        flex-direction:column;
+      }
+
+      .form-row{
+        grid-template-columns: 1fr;
+        gap:6px;
+      }
+
+      .market-analytics-top{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="dashboard-shell">
+    <header class="dashboard-header">
+      <div class="brand-mark">
+        <span class="brand-dot"></span>
+        <span>Hill Country Innovators</span>
+      </div>
+      <div class="header-actions">
+        <div class="tagline">Sri Lanka Supply Chain</div>
+        <button id="notificationBell" class="notification-bell" type="button" aria-label="Notifications">
+          <span aria-hidden="true">&#128276;</span>
+          <span id="notificationBadge" class="notification-badge">0</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <h2>Farmer Panel</h2>
+        <button class="menu-btn active" onclick="setActive(this); showTab('myHarvest')">My Harvest</button>
+        <button class="menu-btn" onclick="setActive(this); showTab('addHarvest')">Add Harvest</button>
+        <button class="menu-btn" onclick="setActive(this); showTab('myOrders')">My Orders</button>
+        <button class="menu-btn" onclick="setActive(this); showTab('revenue')">My Revenue</button>
+        <button class="menu-btn" onclick="setActive(this); showTab('marketAnalytics')">Market Analytics</button>
+        <button onclick="logout()">Logout</button>
+      </div>
+
+      <!-- MAIN CONTENT -->
+      <div class="main-content">
+        <h1 class="page-title">Farmer Dashboard</h1>
+
+        <div id="content">
+          <!-- ADD HARVEST -->
+          <div id="addHarvestTab" class="tabSection panel-card">
+            <h2>Add / Edit Harvest</h2>
+
+            <form id="harvestForm" enctype="multipart/form-data">
+      <input type="hidden" id="harvestId" name="harvestId">
+      <div class="add-harvest-grid">
+        <div class="form-row">
+          <label for="category">Category</label>
+          <select id="category" name="category" onchange="updateVarieties('category','productName')" required>
+            <option value="">Select Category</option>
+            <option value="Vegetable">Vegetable</option>
+            <option value="Fruit">Fruit</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="productName">Product Variety</label>
+          <select id="productName" name="productName" required>
+            <option value="">Select Product Variety</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="quantityKg">Quantity</label>
+          <input id="quantityKg" name="quantityKg" placeholder="KG" type="number" step="0.01">
+        </div>
+
+        <div class="form-row">
+          <label for="district">District</label>
+          <select name="district" id="district" required>
+            <option value="">Select District</option>
+            <option>Ampara</option>
+            <option>Anuradhapura</option>
+            <option>Badulla</option>
+            <option>Batticaloa</option>
+            <option>Colombo</option>
+            <option>Galle</option>
+            <option>Gampaha</option>
+            <option>Hambantota</option>
+            <option>Jaffna</option>
+            <option>Kalutara</option>
+            <option>Kandy</option>
+            <option>Kegalle</option>
+            <option>Kilinochchi</option>
+            <option>Kurunegala</option>
+            <option>Mannar</option>
+            <option>Matale</option>
+            <option>Matara</option>
+            <option>Monaragala</option>
+            <option>Mullaitivu</option>
+            <option>Nuwara Eliya</option>
+            <option>Polonnaruwa</option>
+            <option>Puttalam</option>
+            <option>Ratnapura</option>
+            <option>Trincomalee</option>
+            <option>Vavuniya</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="mainCity">City</label>
+          <select name="mainCity" id="mainCity" required>
+            <option value="">Select Main City</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="availableDate">Date</label>
+          <input id="availableDate" type="date" name="availableDate">
+        </div>
+
+        <div class="form-row">
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            placeholder="e.g. Specific variety like Willard Mango, Organic grown, or ripened naturally."
+          ></textarea>
+        </div>
+      </div>
+
+      <h3>Pickup Location</h3>
+      <input
+        type="text"
+        id="pickupAddress"
+        name="address"
+        placeholder="Search Address"
+        required
+      >
+      <div id="harvestMap" style="height:300px;"></div>
+      <input type="hidden" name="lat" id="pickupLat">
+      <input type="hidden" name="lng" id="pickupLng">
+
+      <div class="upload-field">
+        <input class="file-input" type="file" id="harvestImages" name="images" accept="image/*" multiple>
+        <label class="upload-btn" for="harvestImages">Upload Product Images</label>
+        <p id="fileNameNote" class="upload-note">No file selected</p>
+        <div id="imagePreview" class="upload-preview"></div>
+      </div>
+      <button id="submitHarvestBtn" type="submit">Add Harvest</button>
+            </form>
+          </div>
+
+          <!-- MY HARVEST -->
+          <div id="myHarvestTab" class="tabSection panel-card">
+            <h2>My Harvest</h2>
+            <div id="myHarvestList"></div>
+          </div>
+
+          <!-- MY ORDERS -->
+          <div id="myOrdersTab" class="tabSection panel-card">
+            <h2>My Orders</h2>
+            <div id="myOrdersList"></div>
+          </div>
+
+          <!-- REVENUE -->
+          <div id="revenueTab" class="tabSection panel-card">
+            <h2>My Revenue</h2>
+            <div class="analytics">
+              <div class="analytics-card">
+                <span>Total Harvest</span>
+                <strong id="totalHarvest">0</strong>
+              </div>
+              <div class="analytics-card">
+                <span>Total Orders</span>
+                <strong id="totalOrders">0</strong>
+              </div>
+              <div class="analytics-card highlight">
+                <span>Total Revenue</span>
+                <strong id="totalRevenue">Rs 0</strong>
+              </div>
+            </div>
+          </div>
+
+          <div id="marketAnalyticsTab" class="tabSection panel-card market-analytics-card">
+            <h2>Market Analytics</h2>
+
+            <div class="market-analytics-top">
+              <label for="marketCategorySelect">Select Category</label>
+              <select id="marketCategorySelect" onchange="updateVarieties('marketCategorySelect','marketVarietySelect')">
+                <option value="">Select Category</option>
+                <option value="Vegetable">Vegetable</option>
+                <option value="Fruit">Fruit</option>
+              </select>
+            </div>
+
+            <div class="market-analytics-top">
+              <label for="marketVarietySelect">Select Variety</label>
+              <select id="marketVarietySelect">
+                <option value="">Select Variety</option>
+              </select>
+            </div>
+
+            <div class="market-chart-wrap">
+              <canvas id="marketPriceChart"></canvas>
+            </div>
+
+            <div class="prediction-box">
+              <h3>Price Predictions</h3>
+              <ul id="predictionList" class="prediction-list"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT HARVEST MODAL -->
+  <div id="editHarvestModal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Edit Harvest</h3>
+        <button type="button" class="modal-close" onclick="closeEditModal()">Close</button>
+      </div>
+
+      <form id="editHarvestForm">
+        <input type="hidden" id="editHarvestId">
+        <select id="editProductName" name="productName" required>
+          <option value="">Select Product</option>
+        </select>
+        <input id="editQuantityKg" name="quantityKg" placeholder="KG" type="number" step="0.01">
+
+        <select id="editDistrict" name="district" required>
+          <option value="">Select District</option>
+          <option>Ampara</option>
+          <option>Anuradhapura</option>
+          <option>Badulla</option>
+          <option>Batticaloa</option>
+          <option>Colombo</option>
+          <option>Galle</option>
+          <option>Gampaha</option>
+          <option>Hambantota</option>
+          <option>Jaffna</option>
+          <option>Kalutara</option>
+          <option>Kandy</option>
+          <option>Kegalle</option>
+          <option>Kilinochchi</option>
+          <option>Kurunegala</option>
+          <option>Mannar</option>
+          <option>Matale</option>
+          <option>Matara</option>
+          <option>Monaragala</option>
+          <option>Mullaitivu</option>
+          <option>Nuwara Eliya</option>
+          <option>Polonnaruwa</option>
+          <option>Puttalam</option>
+          <option>Ratnapura</option>
+          <option>Trincomalee</option>
+          <option>Vavuniya</option>
+        </select>
+
+        <select id="editCategory" name="category" onchange="updateVarieties('editCategory','editProductName')" required>
+          <option value="">Select Category</option>
+          <option value="Vegetable">Vegetable</option>
+          <option value="Fruit">Fruit</option>
+        </select>
+
+        <input id="editAvailableDate" type="date" name="availableDate">
+        <textarea
+          id="editDescription"
+          name="description"
+          placeholder="e.g. Specific variety like Willard Mango, Organic grown, or ripened naturally."
+        ></textarea>
+
+        <div class="modal-actions">
+          <button type="submit" class="primary-btn">Save Changes</button>
+          <button type="button" class="secondary-btn" onclick="closeEditModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="notificationToastContainer"></div>
+  <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/farmer.js"></script>
+<script async
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPYaCJpe_H30LDm7fNlPfIPtBe2MseqE4&libraries=places&callback=initHarvestMap">
+</script>
+</body>
+</html>
