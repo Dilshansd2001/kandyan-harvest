@@ -1,4 +1,4 @@
-const API = "https://kandyan-harvest.vercel.app/api";
+const API = "https://kandyan-harvest-backend-new.vercel.app/api";
 
 function setMessage(el, message, isError = false) {
   if (!el) return;

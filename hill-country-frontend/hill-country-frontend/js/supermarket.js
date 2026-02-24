@@ -1,4 +1,4 @@
-const API = "https://kandyan-harvest.vercel.app/api";
+const API = "https://kandyan-harvest-backend-new.vercel.app/api";
 const token = localStorage.getItem("token");
 const socketUrl = "https://kandyan-harvest.vercel.app";
 
